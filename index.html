@@ -1,0 +1,489 @@
+<title>Квалификационный год: цели, признаки, доход</title>
+<style>
+:root {
+  --bg: #FAF7F2;
+  --surface: #FFFFFF;
+  --surface-soft: #F3EDE3;
+  --ink: #2A241D;
+  --ink-soft: #6B6154;
+  --line: #E7DFD1;
+  --accent: #BC5B33;
+  --accent-soft: #F1DDCB;
+  --shadow: 0 1px 2px rgba(42,36,29,.06), 0 8px 24px rgba(42,36,29,.05);
+
+  --tag-a: #46586E; --tag-a-bg: #E5E9EF;
+  --tag-b: #3E6E5E; --tag-b-bg: #E3EDE7;
+  --tag-c: #7A4F8F; --tag-c-bg: #EEE3F1;
+  --tag-d: #8A6A2F; --tag-d-bg: #F1E8D3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1B1712;
+    --surface: #221D17;
+    --surface-soft: #2A241C;
+    --ink: #EDE6DA;
+    --ink-soft: #A89C89;
+    --line: #3A3227;
+    --accent: #E08659;
+    --accent-soft: #3A2A1F;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+
+    --tag-a: #9AB2D6; --tag-a-bg: #212A38;
+    --tag-b: #7FC4A8; --tag-b-bg: #223027;
+    --tag-c: #CFA3DE; --tag-c-bg: #2E2334;
+    --tag-d: #D9BB74; --tag-d-bg: #332A16;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #1B1712;
+  --surface: #221D17;
+  --surface-soft: #2A241C;
+  --ink: #EDE6DA;
+  --ink-soft: #A89C89;
+  --line: #3A3227;
+  --accent: #E08659;
+  --accent-soft: #3A2A1F;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+
+  --tag-a: #9AB2D6; --tag-a-bg: #212A38;
+  --tag-b: #7FC4A8; --tag-b-bg: #223027;
+  --tag-c: #CFA3DE; --tag-c-bg: #2E2334;
+  --tag-d: #D9BB74; --tag-d-bg: #332A16;
+}
+
+:root[data-theme="light"] {
+  --bg: #FAF7F2;
+  --surface: #FFFFFF;
+  --surface-soft: #F3EDE3;
+  --ink: #2A241D;
+  --ink-soft: #6B6154;
+  --line: #E7DFD1;
+  --accent: #BC5B33;
+  --accent-soft: #F1DDCB;
+  --shadow: 0 1px 2px rgba(42,36,29,.06), 0 8px 24px rgba(42,36,29,.05);
+
+  --tag-a: #46586E; --tag-a-bg: #E5E9EF;
+  --tag-b: #3E6E5E; --tag-b-bg: #E3EDE7;
+  --tag-c: #7A4F8F; --tag-c-bg: #EEE3F1;
+  --tag-d: #8A6A2F; --tag-d-bg: #F1E8D3;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.page { max-width: 1180px; margin: 0 auto; padding: 0 24px 90px; }
+
+h1, h2, h3 {
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-weight: 600;
+  text-wrap: balance;
+  margin: 0;
+}
+
+.masthead {
+  padding: 56px 0 28px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 34px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.masthead h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.15;
+  max-width: 18ch;
+}
+
+.masthead .subtitle {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-size: 16px;
+  max-width: 60ch;
+}
+
+.masthead .source {
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.masthead .source a { color: var(--ink-soft); }
+.masthead .source a:hover { color: var(--accent); }
+
+.toc { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+.toc a {
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  background: var(--surface);
+}
+.toc a:hover, .toc a:focus-visible { color: var(--ink); border-color: var(--accent); }
+
+section.group { margin-bottom: 44px; scroll-margin-top: 20px; }
+
+.group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+  margin-bottom: 18px;
+}
+
+.group-head h2 { font-size: 21px; }
+
+.group-count {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.card-num {
+  font-family: Georgia, serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--accent-soft);
+  -webkit-text-stroke: .9px var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.env-pill {
+  font-size: 10px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.pill-a { color: var(--tag-a); background: var(--tag-a-bg); }
+.pill-b { color: var(--tag-b); background: var(--tag-b-bg); }
+.pill-c { color: var(--tag-c); background: var(--tag-c-bg); }
+.pill-d { color: var(--tag-d); background: var(--tag-d-bg); }
+
+.card h3 { font-size: 16.5px; }
+
+.card p.desc { font-size: 14px; color: var(--ink-soft); margin: 0; }
+
+.cmd-chip {
+  display: inline-flex;
+  align-self: flex-start;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 5px 11px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+details.more { margin-top: 2px; border-top: 1px dashed var(--line); padding-top: 8px; }
+details.more summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+details.more summary::-webkit-details-marker { display: none; }
+details.more summary::before { content: "▸"; font-size: 10px; transition: transform .15s ease; }
+details.more[open] summary::before { transform: rotate(90deg); }
+.more-body { margin-top: 8px; font-size: 13px; line-height: 1.6; color: var(--ink); }
+
+.more-body table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.more-body th, .more-body td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--line); }
+.more-body th { color: var(--ink-soft); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; }
+.more-body td:last-child, .more-body th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.more-body ul { margin: 0; padding-left: 18px; }
+.more-body li + li { margin-top: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+  details.more summary::before { transition: none; }
+}
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <div class="eyebrow">Granola · заметка встречи · 1 сентября 2026</div>
+    <h1>Планирование на новый квалификационный год</h1>
+    <p class="subtitle">Цели, три жизненных признака бизнеса, доход по уровням и бонусные поездки — в 12 карточках.</p>
+    <p class="source">Источник: <a href="https://notes.granola.ai/d/d6578e53-3de1-487c-9b9d-0735c9403eff" target="_blank" rel="noopener">notes.granola.ai/d/d6578e53…</a></p>
+    <nav class="toc">
+      <a href="#ciel">Цели на год</a>
+      <a href="#priznaki">Три признака бизнеса</a>
+      <a href="#dohod">Доход по уровням</a>
+      <a href="#poezdki">Бонусные поездки</a>
+    </nav>
+  </header>
+
+  <section class="group" id="ciel">
+    <div class="group-head">
+      <h2>Цели на новый квалификационный год</h2>
+      <span class="group-count">5</span>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">01</span>
+          <span class="env-pill pill-a">Цели</span>
+        </div>
+        <h3>10 причин, почему цель важна</h3>
+        <p class="desc">Пропиши финансовый и эмоциональный аспект отдельно — цель должна держаться не только на цифрах.</p>
+        <span class="cmd-chip">финансы + эмоции</span>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">02</span>
+          <span class="env-pill pill-a">Цели</span>
+        </div>
+        <h3>Визуализируй команду на конец года</h3>
+        <p class="desc">Сколько человек в команде, кто именно едет в поездки — представь картинку целиком, а не только процент.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">03</span>
+          <span class="env-pill pill-a">Цели</span>
+        </div>
+        <h3>Подключи наставника</h3>
+        <p class="desc">Обсуди цель с наставником, чтобы он участвовал в процессе, а не узнал о ней постфактум.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">04</span>
+          <span class="env-pill pill-a">Цели</span>
+        </div>
+        <h3>Квартальная лестница уровней</h3>
+        <p class="desc">Пример для новичка — рост процента по сезонам.</p>
+        <span class="cmd-chip">9 → 12 → 18 → 21%</span>
+        <details class="more">
+          <summary>Подробнее</summary>
+          <div class="more-body">
+            <table>
+              <tr><th>Сезон</th><th>Уровень</th></tr>
+              <tr><td>Осень</td><td>9–12% (бронза-старт)</td></tr>
+              <tr><td>Зима</td><td>12% (бронза)</td></tr>
+              <tr><td>Весна</td><td>15–18%</td></tr>
+              <tr><td>Лето</td><td>21%</td></tr>
+            </table>
+          </div>
+        </details>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">05</span>
+          <span class="env-pill pill-a">Цели</span>
+        </div>
+        <h3>Каждый год — фундамент следующего</h3>
+        <p class="desc">Закрыл серебро сейчас — легче взять платину в следующем году. Прогресс накопительный, не с нуля.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="group" id="priznaki">
+    <div class="group-head">
+      <h2>Три жизненных признака бизнеса</h2>
+      <span class="group-count">3</span>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">06</span>
+          <span class="env-pill pill-b">Признак</span>
+        </div>
+        <h3>Активные VIP-номера</h3>
+        <p class="desc">Номера с покупками каждый месяц. Приток новых должен превышать отток — «ведро с дырочкой».</p>
+        <span class="cmd-chip">70–100 номеров на 21%</span>
+        <details class="more">
+          <summary>Подробнее</summary>
+          <div class="more-body">
+            <table>
+              <tr><th>Уровень</th><th>Номера</th></tr>
+              <tr><td>9–12%</td><td>10–20</td></tr>
+              <tr><td>12–15%</td><td>30–40</td></tr>
+              <tr><td>18%</td><td>50–70</td></tr>
+              <tr><td>21%</td><td>70–100 (из них 5–10 активных партнёров)</td></tr>
+            </table>
+          </div>
+        </details>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">07</span>
+          <span class="env-pill pill-b">Признак</span>
+        </div>
+        <h3>Бизнес-клуб</h3>
+        <p class="desc">200+ личных баллов + подписка на Далайф. Это костяк команды: стабильный товарооборот, держат квалификацию.</p>
+        <span class="cmd-chip">20–30 человек на 21%</span>
+        <details class="more">
+          <summary>Подробнее</summary>
+          <div class="more-body">
+            <table>
+              <tr><th>Уровень</th><th>Человек</th></tr>
+              <tr><td>12–15%</td><td>10–15</td></tr>
+              <tr><td>18%</td><td>15–20</td></tr>
+              <tr><td>21%</td><td>20–30</td></tr>
+            </table>
+          </div>
+        </details>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">08</span>
+          <span class="env-pill pill-b">Признак</span>
+        </div>
+        <h3>Посещаемость семинаров</h3>
+        <p class="desc">ББС и ВС, офлайн в приоритете.</p>
+        <span class="cmd-chip">30–40 человек в зале на 21%</span>
+        <details class="more">
+          <summary>Подробнее</summary>
+          <div class="more-body">
+            <table>
+              <tr><th>Уровень</th><th>Человек в зале</th></tr>
+              <tr><td>9–12%</td><td>5–10</td></tr>
+              <tr><td>21%</td><td>30–40</td></tr>
+            </table>
+            <ul style="margin-top:8px;">
+              <li>Ближайшее: осенние ББС, ноябрь — Казань</li>
+              <li>ВС-семинары Даймонд Альянса: топовые спикеры, низкая цена — легко приглашать</li>
+            </ul>
+          </div>
+        </details>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="group" id="dohod">
+    <div class="group-head">
+      <h2>Доход по уровням</h2>
+      <span class="group-count">1</span>
+    </div>
+    <div class="grid">
+
+      <article class="card" style="grid-column: span 2;">
+        <div class="card-top">
+          <span class="card-num">09</span>
+          <span class="env-pill pill-c">Доход</span>
+        </div>
+        <h3>От дополнительного дохода до 3 млн+ ₽</h3>
+        <p class="desc">Доход растёт вместе с уровнем — на бронзе часть людей уже уходит с основной работы.</p>
+        <details class="more" open>
+          <summary>Подробнее</summary>
+          <div class="more-body">
+            <table>
+              <tr><th>Уровень</th><th>Доход</th></tr>
+              <tr><td>9–12%</td><td>до 50 000 ₽ (доп. доход)</td></tr>
+              <tr><td>Бронза</td><td>70 000+ ₽</td></tr>
+              <tr><td>Серебро</td><td>100 000–200 000 ₽</td></tr>
+              <tr><td>21% за год</td><td>1 млн+ ₽</td></tr>
+              <tr><td>Платина</td><td>2 млн+ ₽</td></tr>
+              <tr><td>Платина-основатель</td><td>3 млн+ ₽</td></tr>
+            </table>
+          </div>
+        </details>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="group" id="poezdki">
+    <div class="group-head">
+      <h2>Бонусные поездки этого года</h2>
+      <span class="group-count">3</span>
+    </div>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">10</span>
+          <span class="env-pill pill-d">Поездка</span>
+        </div>
+        <h3>Go Diamond — Астана</h3>
+        <p class="desc">Специальное мероприятие для новых бронзовых.</p>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">11</span>
+          <span class="env-pill pill-d">Поездка</span>
+        </div>
+        <h3>Учебный семинар лидеров — Макао</h3>
+        <p class="desc">Для платины, при 6 квалификационных месяцах.</p>
+        <span class="cmd-chip">6 квал. месяцев</span>
+      </article>
+
+      <article class="card">
+        <div class="card-top">
+          <span class="card-num">12</span>
+          <span class="env-pill pill-d">Поездка</span>
+        </div>
+        <h3>Новое условие в этом году</h3>
+        <p class="desc">Те, кто не квалифицировался в прошлом году, теперь тоже могут поехать — достаточно 6 месяцев квалификации.</p>
+      </article>
+
+    </div>
+  </section>
+
+</div>
