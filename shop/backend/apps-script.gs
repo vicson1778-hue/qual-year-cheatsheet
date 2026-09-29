@@ -247,21 +247,26 @@ function showPrograms_(chatId) {
 function showProgram_(chatId, id) {
   var D = data_(), p = byId_(id);
   if (!p || !p.isProgram) return showPrograms_(chatId);
-  if (p.cover) photo_(chatId, jpg_(p.cover), '<b>' + esc_(p.name) + '</b>');
-  var t = '<b>' + esc_(p.name) + '</b> · ' + esc_(p.duration) + '\n\n' + esc_(p.desc);
+  var pic = p.cover || p.img;
+  if (pic) photo_(chatId, jpg_(pic), '<b>' + esc_(p.name) + '</b>');
+  var t = '<b>' + esc_(p.name) + '</b> · ' + esc_(p.duration) + (p.sku ? ' · арт. ' + esc_(p.sku) : '') + '\n\n' + esc_(p.desc);
+  if (p.benefit) t += '\n\n<b>Чем полезно:</b> ' + esc_(p.benefit);
   if (p.coached) {
     t += '\n\n📍 ' + esc_(p.format) + '\n🗓 ' + esc_(p.start) + (p.note ? '\n⚠️ ' + esc_(p.note) : '');
     t += '\n\n<b>Что входит:</b>\n' + p.features.map(function (f) { return '✔️ ' + esc_(f); }).join('\n');
     if (p.forWhom) t += '\n\n<b>Для кого:</b> ' + esc_(p.forWhom);
   }
-  t += '\n\n<b>Продукты:</b> ' + (p.items.length ? p.items.map(function (i) { var x = byId_(i); return x ? esc_(x.name) : ''; }).join(', ') : 'подбираются индивидуально');
-  t += '\n<b>Стоимость продуктов:</b> ' + rub_(p.price) + (p.coached ? '\nСтоимость сопровождения уточняйте у консультанта.' : '');
+  t += '\n\n<b>Что входит:</b>' + (p.items.length ? '\n' + p.items.map(function (i) { var x = byId_(i); return x ? '• ' + esc_(x.name) + ' · ' + rub_(x.price) : ''; }).join('\n') : ' продукты подбираются индивидуально');
+  t += '\n<b>' + (p.fixedKzt ? 'Цена программы' : 'Стоимость продуктов') + ':</b> ' + rub_(p.price) +
+    (p.fixedKzt && p.sumPrice > p.price ? ' (по отдельности ' + rub_(p.sumPrice) + ')' : '') +
+    (p.coached ? '\nСтоимость сопровождения уточняйте у консультанта.' : '');
   t += '\n\n<i>* Цены примерные, уточняйте у консультанта.</i>';
+  var itemRows = p.items.slice(0, 6).map(function (i) { var x = byId_(i); return x ? [btn_('ℹ️ ' + x.name.slice(0, 48), 'p:' + x.id)] : null; }).filter(Boolean);
   send_(chatId, t, kb_([
-    [btn_(p.coached ? '✅ Хочу в программу' : '✅ Хочу этот набор', 'lead:' + p.id)],
-    [url_('Подробнее на сайте', site_() + (p.coached ? '#solutions' : '#programs'))],
+    [btn_(p.coached ? '✅ Хочу в программу' : '✅ Хочу этот набор', 'lead:' + p.id)]].concat(p.coached ? [] : itemRows, [
+    [url_('Подробнее на сайте', site_() + (p.coached ? '#solutions' : '#item=' + p.id))],
     [btn_('‹ Все программы', 'pr'), btn_('Меню', 'm')]
-  ]));
+  ])));
 }
 
 function showCatalog_(chatId) {
@@ -604,7 +609,8 @@ function data_() {
   var P = (w.SHOP_PRODUCTS || []).map(function (p) { p.price = Math.round(p.priceKzt * rate / 10) * 10; byId[p.id] = p; return p; });
   var PR = (w.SHOP_PROGRAMS || []).map(function (p) {
     p.isProgram = true;
-    p.price = p.items.reduce(function (sum, id) { return sum + (byId[id] ? byId[id].price : 0); }, 0);
+    p.sumPrice = p.items.reduce(function (sum, id) { return sum + (byId[id] ? byId[id].price : 0); }, 0);
+    p.price = p.fixedKzt ? Math.round(p.fixedKzt * rate / 10) * 10 : p.sumPrice;
     return p;
   });
   DATA_ = { cfg: cfg, P: P, PR: PR, D: w.SHOP_DETAILS || {} };

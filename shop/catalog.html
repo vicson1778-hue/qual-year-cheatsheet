@@ -131,7 +131,10 @@ h2.sec { font-size: 22px; margin: 30px 0 4px; padding-bottom: 6px; border-bottom
   function rub(n) { return n ? fmt.format(n) + " ₽*" : "по запросу"; }
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   P.forEach(function (p) { p.price = Math.round(p.priceKzt * RATE / 10) * 10; byId[p.id] = p; });
-  PR.forEach(function (p) { p.price = p.items.reduce(function (s, id) { return s + (byId[id] ? byId[id].price : 0); }, 0); });
+  PR.forEach(function (p) {
+    p.sumPrice = p.items.reduce(function (s, id) { return s + (byId[id] ? byId[id].price : 0); }, 0);
+    p.price = p.fixedKzt ? Math.round(p.fixedKzt * RATE / 10) * 10 : p.sumPrice;
+  });
 
   document.title = "Каталог продукции · " + (C.siteName || "");
   document.querySelectorAll("[data-site-name]").forEach(function (el) { el.textContent = C.siteName || el.textContent; });
@@ -159,8 +162,13 @@ h2.sec { font-size: 22px; margin: 30px 0 4px; padding-bottom: 6px; border-bottom
 
   h += '<h2 class="sec" id="sets">Готовые наборы</h2>';
   PR.filter(function (p) { return !p.coached; }).forEach(function (p) {
-    h += '<div class="item" style="grid-template-columns:1fr"><div><div class="top"><h3>' + esc(p.name) + ' <span class="meta">· ' + esc(p.duration) + "</span></h3>" +
-      '<div class="price">' + rub(p.price) + "</div></div><p>" + esc(p.desc) + "</p><p><b>Состав:</b> " + names(p.items) + "</p></div></div>";
+    var pics = p.img ? '<img src="' + esc(p.img) + '" alt="">' : p.items.map(function (id) { return byId[id] && byId[id].img ? '<img src="' + esc(byId[id].img) + '" alt="" style="max-width:48%;max-height:60px">' : ""; }).join("");
+    h += '<div class="item"><div class="ph" style="flex-wrap:wrap;display:flex;gap:4px;justify-content:center;align-items:center">' + pics + '</div><div><div class="top"><h3>' + esc(p.name) + ' <span class="meta">· ' + esc(p.duration) + (p.sku ? " · арт. " + esc(p.sku) : "") + "</span></h3>" +
+      '<div class="price">' + rub(p.price) + "</div></div>" +
+      (p.benefit ? '<div class="benefit"><b>Чем полезно.</b> ' + esc(p.benefit) + "</div>" : "<p>" + esc(p.desc) + "</p>") +
+      "<p><b>Состав:</b> " + names(p.items) + "</p>" +
+      (p.fixedKzt && p.sumPrice > p.price ? '<p class="small">По отдельности ' + rub(p.sumPrice) + ", выгода " + rub(p.sumPrice - p.price) + "</p>" : "") +
+      "</div></div>";
   });
 
   [["health", "Здоровье"], ["beauty", "Красота"], ["home", "Для дома"]].forEach(function (c, i) {
