@@ -221,6 +221,7 @@ h2 { font-size: clamp(24px, 3.4vw, 32px); margin: 0; letter-spacing: -.01em; }
 .dl h2 { font-size: 22px; }
 .dl p { margin: 4px 0 0; color: var(--ink-soft); }
 .dl-act { display: flex; flex-direction: column; gap: 8px; }
+.dl-small { font-size: 13.5px; text-align: center; color: var(--accent); }
 @media (max-width: 760px) { .dl { grid-template-columns: 1fr; } .dl-act .btn { width: 100%; } }
 footer { padding: 32px 0 110px; color: var(--ink-soft); font-size: 13.5px; border-top: 1px solid var(--line); margin-top: 24px; }
 footer p { margin: 0 0 8px; max-width: 60em; }
@@ -443,12 +444,13 @@ textarea { min-height: 76px; resize: vertical; }
       <div class="dl">
         <div class="dl-ic"><svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14"/></svg></div>
         <div class="dl-txt">
-          <h2>Каталог продукции</h2>
-          <p>Все программы, наборы и товары с фото, ценами, описанием «чем полезно», способом применения и составом. Удобно сохранить на телефон или переслать.</p>
+          <h2>Полный каталог продукции</h2>
+          <p>Официальный каталог 2026 года: 252 страницы, вся продукция для здоровья, красоты и дома с описаниями и составом. Цены в каталоге указаны в тенге, цены в рублях уточняйте у консультанта.</p>
         </div>
         <div class="dl-act">
-          <a class="btn" href="catalog.pdf" download>Скачать каталог (PDF)</a>
-          <a class="btn ghost" href="catalog.html" target="_blank" rel="noopener">Открыть для печати</a>
+          <a class="btn" href="katalog-2026.pdf" download="Каталог-продукции-2026.pdf">Скачать полный каталог (PDF, 18 МБ)</a>
+          <a class="btn ghost" href="katalog-2026.pdf" target="_blank" rel="noopener">Открыть в браузере</a>
+          <a class="dl-small" href="catalog.pdf" download>Краткая подборка с ценами в рублях (PDF)</a>
         </div>
       </div>
     </div>
