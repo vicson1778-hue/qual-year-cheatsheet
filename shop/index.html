@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Центр здоровья и красоты</title>
+<title>Магазин здоровья и красоты</title>
 <meta name="description" content="Витамины, уход за кожей и волосами, экосредства для дома. Бесплатный подбор и консультация.">
-<meta property="og:title" content="Центр здоровья и красоты">
+<meta property="og:title" content="Магазин здоровья и красоты">
 <meta property="og:description" content="Подберём продукты для здоровья, красоты и дома за 1 минуту. Консультация бесплатно.">
 <meta name="theme-color" content="#2F6B58">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232F6B58'/%3E%3Cpath d='M10 19c0-6 5-9 12-9-1 7-4 12-10 12' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
@@ -264,7 +264,7 @@ textarea { min-height: 76px; resize: vertical; }
   <div class="wrap">
     <a class="brand" href="#top">
       <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="var(--accent)"/><path d="M10 19c0-6 5-9 12-9-1 7-4 12-10 12" fill="none" stroke="var(--accent-ink)" stroke-width="2.4" stroke-linecap="round"/></svg>
-      <span data-site-name>Центр здоровья и красоты</span>
+      <span data-site-name>Магазин здоровья и красоты</span>
     </a>
     <nav class="links" aria-label="Разделы">
       <a href="#quiz">Подбор</a>
@@ -376,7 +376,7 @@ textarea { min-height: 76px; resize: vertical; }
 
 <footer>
   <div class="wrap">
-    <p>Цены указаны по каталогу (<span data-catalog-date></span>) и могут измениться. Точную стоимость и наличие консультант подтвердит при оформлении.</p>
+    <p>* Цены примерные: пересчитаны в рубли из розничного каталога Казахстана (<span data-catalog-date></span>) по курсу 1 ₸ = <span data-rate></span> ₽. Точную стоимость и наличие уточняйте у консультанта.</p>
     <p>Биологически активные добавки не являются лекарственными средствами. Перед применением проконсультируйтесь со специалистом.</p>
     <p><a href="privacy.html">Политика обработки персональных данных</a></p>
   </div>
@@ -449,17 +449,24 @@ textarea { min-height: 76px; resize: vertical; }
   var C = window.SHOP_CONFIG || {};
   var P = window.SHOP_PRODUCTS || [];
   var PR = window.SHOP_PROGRAMS || [];
+  var RATE = Number(C.kztToRub) || 0.2;
   var byId = {};
-  P.forEach(function (p) { byId[p.id] = p; });
+  P.forEach(function (p) {
+    p.price = Math.round(p.priceKzt * RATE / 10) * 10;
+    byId[p.id] = p;
+  });
   PR.forEach(function (p) {
     p.isProgram = true;
     p.price = p.items.reduce(function (s, id) { return s + (byId[id] ? byId[id].price : 0); }, 0);
+    p.priceKzt = p.items.reduce(function (s, id) { return s + (byId[id] ? byId[id].priceKzt : 0); }, 0);
     byId[p.id] = p;
   });
 
   var CAT = { health: "Здоровье", beauty: "Красота", home: "Для дома" };
   var fmt = new Intl.NumberFormat("ru-RU");
-  function rub(n) { return fmt.format(n) + " ₽"; }
+  function rub(n) { return fmt.format(n) + " ₽*"; }
+  function rubPlain(n) { return fmt.format(n) + " ₽"; }
+  function kzt(n) { return fmt.format(n) + " ₸"; }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function $(s) { return document.querySelector(s); }
   function plural(n, a, b, c) { var m = n % 10, h = n % 100; return (m === 1 && h !== 11) ? a : (m >= 2 && m <= 4 && (h < 12 || h > 14)) ? b : c; }
@@ -469,6 +476,7 @@ textarea { min-height: 76px; resize: vertical; }
   document.querySelectorAll("[data-site-name]").forEach(function (el) { el.textContent = C.siteName || el.textContent; });
   $("#tagline").textContent = C.tagline || "";
   document.querySelectorAll("[data-catalog-date]").forEach(function (el) { el.textContent = C.catalogDate || ""; });
+  document.querySelectorAll("[data-rate]").forEach(function (el) { el.textContent = String(RATE).replace(".", ","); });
 
   // ---- Source tracking (?from=instagram, ?utm_source=...)
   var source = "";
@@ -501,7 +509,7 @@ textarea { min-height: 76px; resize: vertical; }
       '<div class="thumb"><span class="tag">' + CAT[p.cat] + '</span><svg width="44" height="44"><use href="#i-' + p.cat + '"/></svg></div>' +
       '<div class="body"><div class="brandline">' + esc(p.brand) + ' · ' + esc(p.size) + '</div>' +
       '<h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p>' +
-      '<div class="foot"><div class="price">' + rub(p.price) + '<small>по каталогу</small></div>' +
+      '<div class="foot"><div class="price">' + rub(p.price) + '<small>примерная цена</small></div>' +
       '<button type="button" class="btn small add' + (inSel ? ' in' : '') + '" data-toggle="' + p.id + '">' + (inSel ? 'В подборке' : 'В подборку') + '</button></div></div></article>';
   }
   function programCard(p) {
@@ -509,7 +517,7 @@ textarea { min-height: 76px; resize: vertical; }
     var names = p.items.map(function (id) { return byId[id] ? '<li>' + esc(byId[id].name.split(",")[0]) + '</li>' : ""; }).join("");
     return '<article class="program"><span class="dur">' + esc(p.duration) + '</span><h3>' + esc(p.name) + '</h3>' +
       '<p>' + esc(p.desc) + '</p><ul>' + names + '</ul>' +
-      '<div class="foot"><div class="price">' + rub(p.price) + '<small>сумма по каталогу</small></div>' +
+      '<div class="foot"><div class="price">' + rub(p.price) + '<small>примерная сумма</small></div>' +
       '<button type="button" class="btn small add' + (inSel ? ' soft' : '') + '" data-toggle="' + p.id + '">' + (inSel ? 'В подборке' : 'Хочу программу') + '</button></div></article>';
   }
 
@@ -527,14 +535,14 @@ textarea { min-height: 76px; resize: vertical; }
         '<div class="qty"><button type="button" data-dec="' + id + '" aria-label="Меньше">−</button><span>' + sel[id] + '</span><button type="button" data-inc="' + id + '" aria-label="Больше">+</button></div></li>';
     }).join("") : '<li class="sel-empty">Подборка пуста. Можно отправить заявку и так, консультант всё подберёт.</li>';
     var t = totals();
-    $("#selTotal").innerHTML = t.n ? '<span>Итого по каталогу<small>окончательную сумму подтвердит консультант</small></span><span>' + rub(t.sum) + '</span>' : "";
+    $("#selTotal").innerHTML = t.n ? '<span>Итого, примерно<small>* точную сумму уточняйте у консультанта</small></span><span>' + rub(t.sum) + '</span>' : "";
   }
 
   function refresh() {
     var t = totals();
     $("#cartCount").textContent = t.n;
     $("#barCount").textContent = t.n + " " + plural(t.n, "позиция", "позиции", "позиций");
-    $("#barTotal").textContent = "на " + rub(t.sum) + " по каталогу";
+    $("#barTotal").textContent = "примерно на " + rub(t.sum);
     $("#bar").classList.toggle("show", t.n > 0 && !$("#leadDlg").open);
     renderCatalog();
     renderSel();
@@ -589,7 +597,7 @@ textarea { min-height: 76px; resize: vertical; }
     html += '<div class="rec">';
     if (prog1 && qAns.start !== "single") {
       html += '<div class="program"><span class="dur">Программа · ' + esc(prog1.duration) + '</span><h3>' + esc(prog1.name) + '</h3><p>' + esc(prog1.desc) + '</p>' +
-        '<div class="foot"><div class="price">' + rub(prog1.price) + '<small>сумма по каталогу</small></div>' +
+        '<div class="foot"><div class="price">' + rub(prog1.price) + '<small>примерная сумма</small></div>' +
         '<button type="button" class="btn small" data-quiz-add="' + prog1.id + '">В подборку</button></div></div>';
     }
     html += '<div class="program"><span class="dur">Продукты</span><h3>Можно начать с этого</h3><ul style="display:block">' +
@@ -617,8 +625,12 @@ textarea { min-height: 76px; resize: vertical; }
     var lines = ["Новая заявка с сайта", "Имя: " + d.name, "Контакт: " + d.contact, "Когда связаться: " + d.time];
     if (d.items.length) {
       lines.push("", "Подборка:");
-      d.items.forEach(function (i) { lines.push("- " + i.name + " x" + i.qty + " (" + rub(i.price * i.qty) + ")"); });
-      lines.push("Итого по каталогу: " + rub(d.total));
+      var sumKzt = 0;
+      d.items.forEach(function (i) {
+        sumKzt += i.priceKzt * i.qty;
+        lines.push("- " + i.name + " x" + i.qty + " (~" + rubPlain(i.price * i.qty) + " / " + kzt(i.priceKzt * i.qty) + ")");
+      });
+      lines.push("Итого примерно: " + rubPlain(d.total) + " (" + kzt(sumKzt) + " по каталогу РК)");
     }
     if (d.quiz) lines.push("", "Подбор: " + d.quiz);
     if (d.comment) lines.push("", "Комментарий: " + d.comment);
@@ -637,7 +649,7 @@ textarea { min-height: 76px; resize: vertical; }
     var t = totals();
     var d = {
       name: name, contact: contact, time: f.time.value, comment: f.comment.value.trim(),
-      items: Object.keys(sel).map(function (id) { return { id: id, name: byId[id].name, qty: sel[id], price: byId[id].price }; }),
+      items: Object.keys(sel).map(function (id) { return { id: id, name: byId[id].name, qty: sel[id], price: byId[id].price, priceKzt: byId[id].priceKzt }; }),
       total: t.sum, quiz: quizSummary, source: source, page: location.href, website: f.website.value
     };
     d.text = leadText(d);
