@@ -51,6 +51,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { scroll-behavior: smooth; }
 body {
   margin: 0; background: var(--bg); color: var(--ink);
@@ -215,6 +216,8 @@ h2 { font-size: clamp(24px, 3.4vw, 32px); margin: 0; letter-spacing: -.01em; }
 .cta-band h2 { color: inherit; }
 .cta-band p { margin: 6px 0 0; opacity: .85; }
 .cta-band .btn { background: var(--accent-ink); color: var(--accent); }
+.cta-act { display: flex; gap: 10px; flex-wrap: wrap; }
+.cta-band .btn.ghost-light { background: transparent; color: var(--accent-ink); border: 1px solid var(--accent-ink); }
 
 .dl { display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 22px; box-shadow: var(--shadow); }
 .dl-ic { width: 56px; height: 56px; border-radius: 16px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; }
@@ -434,7 +437,10 @@ textarea { min-height: 76px; resize: vertical; }
           <h2>Не знаете, с чего начать?</h2>
           <p>Напишите нам, подберём под ваш запрос и бюджет.</p>
         </div>
-        <button class="btn" type="button" data-open-lead>Получить консультацию</button>
+        <div class="cta-act">
+          <button class="btn" type="button" data-open-lead>Получить консультацию</button>
+          <a class="btn ghost-light" id="botLink" hidden target="_blank" rel="noopener">Telegram-бот</a>
+        </div>
       </div>
     </div>
   </section>
@@ -566,6 +572,7 @@ textarea { min-height: 76px; resize: vertical; }
   document.querySelectorAll("[data-site-name]").forEach(function (el) { el.textContent = C.siteName || el.textContent; });
   $("#tagline").textContent = C.tagline || "";
   document.querySelectorAll("[data-catalog-date]").forEach(function (el) { el.textContent = C.catalogDate || ""; });
+  if (C.botUsername) { var bl = $("#botLink"); bl.href = "https://t.me/" + String(C.botUsername).replace(/^@/, ""); bl.hidden = false; }
   document.querySelectorAll("[data-rate]").forEach(function (el) { el.textContent = String(RATE).replace(".", ","); });
 
   // ---- Source tracking (?from=instagram, ?utm_source=...)

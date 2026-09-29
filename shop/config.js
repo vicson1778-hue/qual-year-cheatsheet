@@ -8,6 +8,9 @@ window.SHOP_CONFIG = {
   // и как запасной канал, если endpoint ещё не настроен.
   telegramUsername: "tsvetashova",
 
+  // Username Telegram-бота без @ (после создания в @BotFather). Появится кнопка «Telegram-бот».
+  botUsername: "",
+
   // URL веб-приложения Google Apps Script (см. shop/README.md, шаг 3).
   // Когда он заполнен, заявки сразу приходят вам в Telegram и пишутся в Google Таблицу.
   endpoint: "",
