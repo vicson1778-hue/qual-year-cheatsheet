@@ -244,7 +244,18 @@ footer p { margin: 0 0 8px; max-width: 60em; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bar .btn { background: var(--accent); } }
 
 /* Product details */
-.card .thumb.photo, .card h3.pname { cursor: pointer; }
+.card .thumb.photo, .card h3.pname, .program .pics[data-detail], .program h3.pname { cursor: pointer; }
+.program h3.pname:hover { color: var(--accent); }
+.pd .ph.set { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.pd .ph.set img { max-height: 110px; max-width: 45%; }
+.pd .comp { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.pd .comp li { display: grid; grid-template-columns: 52px 1fr auto; gap: 10px; align-items: center; background: var(--surface-soft); border-radius: 12px; padding: 8px 10px; cursor: pointer; }
+.pd .comp li:hover { outline: 1px solid var(--accent); }
+.pd .comp img { width: 52px; height: 52px; object-fit: contain; background: #fff; border-radius: 8px; }
+.pd .comp .nm b { display: block; font-size: 14px; }
+.pd .comp .nm span { font-size: 12.5px; color: var(--ink-soft); }
+.pd .comp .pr { font-weight: 700; white-space: nowrap; font-size: 14px; }
+.pd .save { color: var(--accent); font-weight: 600; font-size: 13.5px; }
 .card h3.pname:hover { color: var(--accent); }
 .more { background: none; border: 0; padding: 0; color: var(--accent); font-size: 14px; font-weight: 600; text-align: left; cursor: pointer; }
 .more:hover { text-decoration: underline; }
@@ -553,8 +564,10 @@ textarea { min-height: 76px; resize: vertical; }
   });
   PR.forEach(function (p) {
     p.isProgram = true;
-    p.price = p.items.reduce(function (s, id) { return s + (byId[id] ? byId[id].price : 0); }, 0);
-    p.priceKzt = p.items.reduce(function (s, id) { return s + (byId[id] ? byId[id].priceKzt : 0); }, 0);
+    p.sumPrice = p.items.reduce(function (s, id) { return s + (byId[id] ? byId[id].price : 0); }, 0);
+    p.sumKzt = p.items.reduce(function (s, id) { return s + (byId[id] ? byId[id].priceKzt : 0); }, 0);
+    p.priceKzt = p.fixedKzt || p.sumKzt;
+    p.price = p.fixedKzt ? Math.round(p.fixedKzt * RATE / 10) * 10 : p.sumPrice;
     byId[p.id] = p;
   });
 
@@ -616,9 +629,10 @@ textarea { min-height: 76px; resize: vertical; }
     var inSel = !!sel[p.id];
     var names = p.items.map(function (id) { return byId[id] ? '<li>' + esc(byId[id].name.split(",")[0]) + '</li>' : ""; }).join("");
     var pics = p.items.map(function (id) { var x = byId[id]; return x && x.img ? '<img src="' + esc(x.img) + '" alt="" loading="lazy">' : ""; }).join("");
-    return '<article class="program">' + (pics ? '<div class="pics">' + pics + '</div>' : '') + '<span class="dur">' + esc(p.duration) + '</span><h3>' + esc(p.name) + '</h3>' +
+    return '<article class="program">' + (pics ? '<div class="pics" data-detail="' + p.id + '">' + pics + '</div>' : '') + '<span class="dur">' + esc(p.duration) + (p.official ? ' · официальная программа' : '') + '</span><h3 class="pname" data-detail="' + p.id + '">' + esc(p.name) + '</h3>' +
       '<p>' + esc(p.desc) + '</p><ul>' + names + '</ul>' +
-      '<div class="foot"><div class="price">' + rub(p.price) + '<small>примерная сумма</small></div>' +
+      (p.benefit ? '<button type="button" class="more" data-detail="' + p.id + '">Подробнее и чем полезно →</button>' : '') +
+      '<div class="foot"><div class="price">' + rub(p.price) + '<small>' + (p.fixedKzt ? 'цена программы' : 'примерная сумма') + '</small></div>' +
       '<button type="button" class="btn small add' + (inSel ? ' soft' : '') + '" data-toggle="' + p.id + '">' + (inSel ? 'В подборке' : 'Хочу программу') + '</button></div></article>';
   }
 
@@ -734,6 +748,7 @@ textarea { min-height: 76px; resize: vertical; }
   function renderDetail() {
     var p = byId[pdId], d = D[pdId] || {};
     if (!p) return;
+    if (p.isProgram) return renderSetDetail(p);
     var inSel = !!sel[p.id];
     var list = function (a) { return '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join("") + '</ul>'; };
     $("#pdBody").innerHTML = '<div class="pd">' +
@@ -752,15 +767,41 @@ textarea { min-height: 76px; resize: vertical; }
       '<p class="small">Информация по каталогу продукции (' + esc(C.catalogDate || "") + ').</p>' +
       '</div></div>';
   }
+  function firstSentence(s) { var m = /^[^.!?]+[.!?]/.exec(s || ""); return m ? m[0] : (s || ""); }
+  function renderSetDetail(p) {
+    var inSel = !!sel[p.id];
+    var items = p.items.map(function (id) { return byId[id]; }).filter(Boolean);
+    var ph = p.img ? '<div class="ph"><img src="' + esc(p.img) + '" alt="' + esc(p.name) + '"></div>'
+      : p.cover ? '<div class="ph"><img src="' + esc(p.cover) + '" alt="' + esc(p.name) + '"></div>'
+      : '<div class="ph set">' + items.filter(function (x) { return x.img; }).map(function (x) { return '<img src="' + esc(x.img) + '" alt="">'; }).join("") + '</div>';
+    var save = p.fixedKzt && p.sumPrice > p.price ? '<div class="save">По отдельности ' + rub(p.sumPrice) + ', выгода ' + rub(p.sumPrice - p.price) + '</div>' : '';
+    var uses = items.filter(function (x) { return D[x.id] && D[x.id].use; }).map(function (x) { return '<li><b>' + esc(x.name.split(",")[0]) + ':</b> ' + esc(D[x.id].use) + '</li>'; }).join("");
+    var hasBad = items.some(function (x) { return x.cat === "health" && !(D[x.id] || {}).notSupplement; });
+    $("#pdBody").innerHTML = '<div class="pd">' + ph +
+      '<div><div class="brandline">' + (p.coached ? 'Программа с сопровождением' : p.official ? 'Официальная программа Nutrilite' : 'Готовый набор') + ' · ' + esc(p.duration) + (p.sku ? ' · арт. ' + esc(p.sku) : '') + '</div>' +
+      '<h2 id="pdTitle">' + esc(p.name) + '</h2>' +
+      '<div class="buy"><div class="price">' + (p.price ? rub(p.price) : 'по запросу') + '<small>' + (p.fixedKzt ? 'цена программы' : 'примерная сумма') + '</small></div>' +
+      '<button type="button" class="btn small add' + (inSel ? ' in' : '') + '" data-toggle="' + p.id + '">' + (inSel ? 'В подборке' : 'В подборку') + '</button></div>' + save +
+      '<div class="benefit"><b>Чем полезно</b>' + esc(p.benefit || p.desc) + '</div>' +
+      (items.length ? '<h4>Что входит</h4><ul class="comp">' + items.map(function (x) {
+        return '<li data-detail="' + x.id + '">' + (x.img ? '<img src="' + esc(x.img) + '" alt="">' : '<span></span>') +
+          '<div class="nm"><b>' + esc(x.name) + '</b><span>' + esc(x.size) + (D[x.id] && D[x.id].benefit ? ' · ' + esc(firstSentence(D[x.id].benefit)) : '') + '</span></div>' +
+          '<div class="pr">' + rub(x.price) + '</div></li>';
+      }).join("") + '</ul>' : '') +
+      (uses ? '<h4>Как применять</h4><ul>' + uses + '</ul>' : '') +
+      (hasBad ? '<p class="small">БАД, не является лекарственным средством. Имеются противопоказания, перед применением проконсультируйтесь со специалистом.</p>' : '') +
+      '<p class="small">Нажмите на продукт в списке, чтобы узнать о нём подробнее. Информация по каталогу продукции (' + esc(C.catalogDate || "") + ').</p>' +
+      '</div></div>';
+  }
   function openDetail(id) {
-    if (!byId[id] || byId[id].isProgram) return;
+    if (!byId[id]) return;
     pdId = id; renderDetail();
     if (!pdlg.open) { if (typeof pdlg.showModal === "function") pdlg.showModal(); else pdlg.setAttribute("open", ""); }
     try { history.replaceState(null, "", "#item=" + id); } catch (e) {}
     $("#bar").classList.remove("show");
   }
   function closeDetail() { if (pdlg.close) pdlg.close(); else pdlg.removeAttribute("open"); }
-  pdlg.addEventListener("close", function () { pdId = null; try { if (/^#item=/.test(location.hash)) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} refresh(); });
+  pdlg.addEventListener("close", function () { if (pdlg.open) return; pdId = null; try { if (/^#item=/.test(location.hash)) history.replaceState(null, "", location.pathname + location.search); } catch (e) {} refresh(); });
   pdlg.addEventListener("click", function (e) { if (e.target === pdlg) closeDetail(); });
 
   // ---- Lead dialog
@@ -869,8 +910,9 @@ textarea { min-height: 76px; resize: vertical; }
 
   renderQuiz();
   refresh();
-  var hm = /^#item=([\w-]+)/.exec(location.hash);
-  if (hm) openDetail(hm[1]);
+  function openFromHash() { var hm = /^#item=([\w-]+)/.exec(location.hash); if (hm) openDetail(hm[1]); }
+  openFromHash();
+  window.addEventListener("hashchange", openFromHash);
 })();
 </script>
 </body>
