@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Каталог продукции</title>
+<meta name="description" content="Полный каталог: программы, наборы и продукты для здоровья, красоты и дома с описанием и ценами.">
+<style>
+:root {
+  --bg: #FFFFFF; --ink: #1F2320; --ink-soft: #5E655F; --line: #E2DDD2;
+  --accent: #2F6B58; --accent-soft: #DDEBE4; --soft: #F4F1EA;
+}
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #141715; --ink: #ECEFEA; --ink-soft: #A3ABA4; --line: #323833; --accent: #6FBF9F; --accent-soft: #1F3029; --soft: #1C201D; }
+}
+:root[data-theme="dark"] { --bg: #141715; --ink: #ECEFEA; --ink-soft: #A3ABA4; --line: #323833; --accent: #6FBF9F; --accent-soft: #1F3029; --soft: #1C201D; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+main { max-width: 900px; margin: 0 auto; padding: 24px 16px 48px; }
+a { color: var(--accent); }
+.toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.toolbar a, .toolbar button { font: inherit; font-weight: 600; border: 1px solid var(--line); background: var(--soft); color: var(--ink); border-radius: 10px; padding: 8px 14px; text-decoration: none; cursor: pointer; }
+.toolbar .main { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+.cover { border-radius: 20px; background: var(--accent-soft); padding: 32px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center; margin-bottom: 28px; }
+.cover h1 { font-size: 34px; line-height: 1.1; margin: 0 0 10px; }
+.cover p { margin: 0 0 6px; color: var(--ink-soft); font-size: 15px; }
+.cover .contact { margin-top: 14px; font-size: 15px; color: var(--ink); }
+.cover .qr { background: #fff; border-radius: 14px; padding: 10px; text-align: center; font-size: 11px; color: #5E655F; }
+.cover .qr img { width: 130px; height: 130px; display: block; }
+
+h2.sec { font-size: 22px; margin: 30px 0 4px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); }
+.sec-note { color: var(--ink-soft); margin: 6px 0 14px; }
+.toc { columns: 2; gap: 24px; padding-left: 18px; margin: 0 0 8px; }
+.toc li { break-inside: avoid; }
+
+.item { display: grid; grid-template-columns: 120px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); break-inside: avoid; page-break-inside: avoid; }
+.item .ph { background: #fff; border-radius: 12px; display: grid; place-items: center; padding: 6px; height: 140px; }
+.item .ph img { max-width: 100%; max-height: 128px; object-fit: contain; }
+.item .top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.item h3 { margin: 0; font-size: 16px; }
+.item .meta { color: var(--ink-soft); font-size: 12.5px; }
+.item .price { font-weight: 700; font-size: 16px; white-space: nowrap; }
+.item .benefit { background: var(--accent-soft); border-radius: 10px; padding: 8px 10px; margin: 8px 0 6px; }
+.item .benefit b { color: var(--accent); }
+.item ul { margin: 4px 0; padding-left: 18px; }
+.item li { margin: 1px 0; }
+.item p { margin: 3px 0; }
+.item .lbl { font-weight: 700; }
+.item .small { font-size: 12px; color: var(--ink-soft); }
+
+.prog { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; margin: 14px 0; break-inside: avoid; page-break-inside: avoid; display: grid; grid-template-columns: 1fr; }
+.prog .cv { background: var(--soft); }
+.prog .cv img { width: 100%; height: 200px; object-fit: cover; object-position: center 35%; display: block; }
+.prog .bd { padding: 14px 16px; }
+.prog h3 { margin: 0 0 4px; font-size: 18px; }
+.prog .tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0; }
+.prog .tags span { background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: 999px; }
+.prog ul { margin: 4px 0; padding-left: 18px; }
+.prog .price { font-weight: 700; }
+
+.foot { margin-top: 30px; font-size: 12px; color: var(--ink-soft); border-top: 1px solid var(--line); padding-top: 12px; }
+.foot p { margin: 0 0 6px; }
+
+@media (max-width: 640px) {
+  .cover { grid-template-columns: 1fr; padding: 22px; }
+  .cover h1 { font-size: 26px; }
+  .toc { columns: 1; }
+  .item { grid-template-columns: 90px 1fr; }
+  .item .ph { height: 110px; }
+  .prog .cv img { height: 170px; }
+}
+.item > div, .prog .bd, .cover > div { min-width: 0; }
+.cover .contact, .item h3, .item p, .item li { overflow-wrap: anywhere; }
+.item .top { flex-wrap: wrap; }
+@page { size: A4; margin: 14mm 12mm; }
+@media print {
+  .toolbar { display: none; }
+  main { padding: 0; max-width: none; }
+  h2.sec { break-after: avoid; page-break-after: avoid; }
+  .page-break { break-before: page; page-break-before: always; }
+  a { color: inherit; text-decoration: none; }
+}
+</style>
+</head>
+<body>
+<main>
+  <div class="toolbar">
+    <a href="./">← На сайт</a>
+    <a class="main" href="catalog.pdf" download>Скачать PDF</a>
+    <button type="button" onclick="window.print()">Распечатать</button>
+  </div>
+
+  <section class="cover">
+    <div>
+      <h1 data-site-name>Магазин здоровья и красоты</h1>
+      <p>Каталог продукции: программы, наборы, здоровье, красота и дом.</p>
+      <p>Цены в рублях примерные, <span data-catalog-date></span>.</p>
+      <div class="contact" id="contact"></div>
+    </div>
+    <div class="qr"><img src="img/qr-site.png" alt="QR-код сайта">Сайт и заявка</div>
+  </section>
+
+  <h2 class="sec">Содержание</h2>
+  <ol class="toc">
+    <li><a href="#solutions">Программы здоровья с сопровождением</a></li>
+    <li><a href="#sets">Готовые наборы</a></li>
+    <li><a href="#health">Здоровье</a></li>
+    <li><a href="#beauty">Красота</a></li>
+    <li><a href="#home">Для дома</a></li>
+  </ol>
+
+  <div id="content"></div>
+
+  <div class="foot">
+    <p>* Цены примерные: пересчитаны в рубли из розничного каталога Казахстана по курсу 1 ₸ = <span data-rate></span> ₽ и округлены до 10 ₽. Точную стоимость и наличие уточняйте у консультанта.</p>
+    <p>Биологически активные добавки не являются лекарственными средствами. Имеются противопоказания, перед применением проконсультируйтесь со специалистом.</p>
+    <p>Описания составлены по каталогу продукции. Этикетка может отличаться от изображения.</p>
+  </div>
+</main>
+
+<script src="config.js"></script>
+<script src="products.js"></script>
+<script src="details.js"></script>
+<script>
+(function () {
+  "use strict";
+  var C = window.SHOP_CONFIG || {}, P = window.SHOP_PRODUCTS || [], PR = window.SHOP_PROGRAMS || [], D = window.SHOP_DETAILS || {};
+  var RATE = Number(C.kztToRub) || 0.2, byId = {};
+  var fmt = new Intl.NumberFormat("ru-RU");
+  function rub(n) { return n ? fmt.format(n) + " ₽*" : "по запросу"; }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  P.forEach(function (p) { p.price = Math.round(p.priceKzt * RATE / 10) * 10; byId[p.id] = p; });
+  PR.forEach(function (p) { p.price = p.items.reduce(function (s, id) { return s + (byId[id] ? byId[id].price : 0); }, 0); });
+
+  document.title = "Каталог продукции · " + (C.siteName || "");
+  document.querySelectorAll("[data-site-name]").forEach(function (el) { el.textContent = C.siteName || el.textContent; });
+  document.querySelectorAll("[data-catalog-date]").forEach(function (el) { el.textContent = C.catalogDate || ""; });
+  document.querySelectorAll("[data-rate]").forEach(function (el) { el.textContent = String(RATE).replace(".", ","); });
+  var site = "https://vicson1778-hue.github.io/qual-year-cheatsheet/shop/";
+  document.getElementById("contact").innerHTML =
+    (C.telegramUsername ? "Заказ и консультация в Telegram: <b>@" + esc(C.telegramUsername) + "</b><br>" : "") +
+    'Сайт: <a href="' + site + '">' + site.replace("https://", "") + "</a>";
+
+  function names(ids) { return ids.map(function (id) { return byId[id] ? esc(byId[id].name) : ""; }).join(", "); }
+  function list(a) { return "<ul>" + a.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>"; }
+
+  var h = "";
+  h += '<h2 class="sec page-break" id="solutions">Программы здоровья с сопровождением</h2><p class="sec-note">Продукты, план, меню и поддержка каждый день. Стоимость сопровождения уточняйте у консультанта.</p>';
+  PR.filter(function (p) { return p.coached; }).forEach(function (p) {
+    h += '<div class="prog"><div class="cv"><img src="' + esc(p.cover) + '" alt=""></div><div class="bd">' +
+      "<h3>" + esc(p.name) + "</h3><p>" + esc(p.desc) + "</p>" +
+      '<div class="tags"><span>' + esc(p.duration) + "</span><span>" + esc(p.format) + "</span><span>" + esc(p.start) + "</span></div>" +
+      list(p.features) +
+      (p.forWhom ? "<p><b>Для кого:</b> " + esc(p.forWhom) + "</p>" : "") +
+      "<p><b>Продукты:</b> " + (p.items.length ? names(p.items) : "набор подбирается индивидуально") + "</p>" +
+      '<p class="price">Продукты программы: ' + rub(p.price) + "</p></div></div>";
+  });
+
+  h += '<h2 class="sec" id="sets">Готовые наборы</h2>';
+  PR.filter(function (p) { return !p.coached; }).forEach(function (p) {
+    h += '<div class="item" style="grid-template-columns:1fr"><div><div class="top"><h3>' + esc(p.name) + ' <span class="meta">· ' + esc(p.duration) + "</span></h3>" +
+      '<div class="price">' + rub(p.price) + "</div></div><p>" + esc(p.desc) + "</p><p><b>Состав:</b> " + names(p.items) + "</p></div></div>";
+  });
+
+  [["health", "Здоровье"], ["beauty", "Красота"], ["home", "Для дома"]].forEach(function (c, i) {
+    h += '<h2 class="sec' + '" id="' + c[0] + '">' + c[1] + "</h2>";
+    P.filter(function (p) { return p.cat === c[0]; }).forEach(function (p) {
+      var d = D[p.id] || {};
+      h += '<div class="item"><div class="ph">' + (p.img ? '<img src="' + esc(p.img) + '" alt="">' : "") + "</div><div>" +
+        '<div class="top"><h3>' + esc(p.name) + '</h3><div class="price">' + rub(p.price) + "</div></div>" +
+        '<div class="meta">' + esc(p.brand) + " · " + esc(p.size) + (p.sku ? " · арт. " + esc(p.sku) : "") + "</div>" +
+        (d.benefit ? '<div class="benefit"><b>Чем полезно.</b> ' + esc(d.benefit) + "</div>" : "<p>" + esc(p.desc) + "</p>") +
+        (d.features ? list(d.features) : "") +
+        (d.use ? '<p><span class="lbl">Как применять:</span> ' + esc(d.use) + "</p>" : "") +
+        (d.ingredients ? '<p><span class="lbl">Ингредиенты:</span> ' + esc(d.ingredients) + "</p>" : "") +
+        (d.contra ? '<p><span class="lbl">Противопоказания:</span> ' + esc(d.contra) + "</p>" : "") +
+        (d.also ? '<p class="small">' + esc(d.also) + "</p>" : "") +
+        "</div></div>";
+    });
+  });
+  document.getElementById("content").innerHTML = h;
+})();
+</script>
+</body>
+</html>
