@@ -6,7 +6,7 @@ window.SHOP_CONFIG = {
 
   // Ваш username в Telegram без @. Нужен для кнопки «Написать в Telegram»
   // и как запасной канал, если endpoint ещё не настроен.
-  telegramUsername: "",
+  telegramUsername: "tsvetashova",
 
   // URL веб-приложения Google Apps Script (см. shop/README.md, шаг 3).
   // Когда он заполнен, заявки сразу приходят вам в Telegram и пишутся в Google Таблицу.
