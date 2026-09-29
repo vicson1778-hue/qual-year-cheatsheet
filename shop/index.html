@@ -170,6 +170,24 @@ h2 { font-size: clamp(24px, 3.4vw, 32px); margin: 0; letter-spacing: -.01em; }
 .price small { display: block; font-weight: 400; font-size: 12px; color: var(--ink-soft); }
 .card .add.in { background: var(--accent-soft); color: var(--accent); }
 
+.sol-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; }
+.sol { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; }
+.sol .cover { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--surface-soft); }
+.sol .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; display: block; }
+.sol .cover .badge { position: absolute; left: 12px; bottom: 12px; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 13px; padding: 5px 10px; border-radius: 999px; }
+.sol .body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.sol h3 { margin: 0; font-size: 21px; }
+.sol p { margin: 0; color: var(--ink-soft); font-size: 14.5px; }
+.sol .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.sol .meta span { font-size: 12.5px; font-weight: 600; background: var(--accent-soft); color: var(--accent); padding: 4px 10px; border-radius: 999px; }
+.sol ul.feat { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 14.5px; }
+.sol ul.feat li { display: flex; gap: 8px; align-items: flex-start; }
+.sol ul.feat svg { flex: none; color: var(--accent); margin-top: 3px; }
+.sol .who { font-size: 13.5px; color: var(--ink-soft); background: var(--surface-soft); border-radius: 12px; padding: 10px 12px; }
+.sol .pics { display: flex; flex-wrap: wrap; gap: 4px; background: #FFFFFF; border-radius: 12px; padding: 8px; justify-content: center; }
+.sol .pics img { height: 52px; width: auto; max-width: 18%; object-fit: contain; }
+.sol .setnote { font-size: 13px; color: var(--ink-soft); }
+.sol .foot { margin-top: auto; padding-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .program { border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); padding: 18px; display: flex; flex-direction: column; gap: 8px; }
 .program .dur { font-size: 13px; color: var(--accent); font-weight: 600; }
 .program h3 { margin: 0; font-size: 19px; }
@@ -273,7 +291,8 @@ textarea { min-height: 76px; resize: vertical; }
     </a>
     <nav class="links" aria-label="Разделы">
       <a href="#quiz">Подбор</a>
-      <a href="#programs">Программы</a>
+      <a href="#solutions">Программы</a>
+      <a href="#programs">Наборы</a>
       <a href="#catalog">Каталог</a>
       <a href="#how">Как заказать</a>
     </nav>
@@ -325,11 +344,23 @@ textarea { min-height: 76px; resize: vertical; }
     </div>
   </section>
 
+  <section class="block" id="solutions">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <h2>Программы здоровья с сопровождением</h2>
+          <p>Готовое решение под задачу: продукты, план, меню и поддержка каждый день.</p>
+        </div>
+      </div>
+      <div class="sol-grid" id="solGrid"></div>
+    </div>
+  </section>
+
   <section class="block" id="programs">
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <h2>Готовые программы</h2>
+          <h2>Готовые наборы</h2>
           <p>Набор под задачу, схема приёма и сопровождение консультанта.</p>
         </div>
       </div>
@@ -529,17 +560,35 @@ textarea { min-height: 76px; resize: vertical; }
       '<button type="button" class="btn small add' + (inSel ? ' soft' : '') + '" data-toggle="' + p.id + '">' + (inSel ? 'В подборке' : 'Хочу программу') + '</button></div></article>';
   }
 
+  function priceText(p) { return p.price ? rub(p.price) : "по запросу"; }
+  function solCard(p) {
+    var inSel = !!sel[p.id];
+    var pics = p.items.map(function (id) { var x = byId[id]; return x && x.img ? '<img src="' + esc(x.img) + '" alt="' + esc(x.name) + '" title="' + esc(x.name) + '" loading="lazy">' : ""; }).join("");
+    var check = '<svg width="16" height="16"><use href="#i-check"/></svg>';
+    return '<article class="sol">' +
+      '<div class="cover"><img src="' + esc(p.cover) + '" alt="' + esc(p.name) + '" loading="lazy"><span class="badge">' + esc(p.duration) + '</span></div>' +
+      '<div class="body"><h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p>' +
+      '<div class="meta"><span>' + esc(p.format) + '</span><span>' + esc(p.start) + '</span>' + (p.note ? '<span>' + esc(p.note) + '</span>' : '') + '</div>' +
+      '<ul class="feat">' + p.features.map(function (f) { return '<li>' + check + '<span>' + esc(f) + '</span></li>'; }).join("") + '</ul>' +
+      (p.forWhom ? '<div class="who"><b>Для кого:</b> ' + esc(p.forWhom) + '</div>' : '') +
+      (pics ? '<div class="pics">' + pics + '</div>' : '') +
+      '<div class="setnote">' + (p.items.length ? 'Продукты программы: ' + p.items.map(function (id) { return byId[id] ? esc(byId[id].name.split(",")[0]) : ""; }).join(", ") + '.' : 'Набор продуктов консультант подберёт индивидуально.') + ' Стоимость сопровождения уточняйте у консультанта.</div>' +
+      '<div class="foot"><div class="price">' + priceText(p) + '<small>' + (p.price ? 'продукты, примерно' : 'набор продуктов') + '</small></div>' +
+      '<button type="button" class="btn small add' + (inSel ? ' soft' : '') + '" data-toggle="' + p.id + '">' + (inSel ? 'В подборке' : 'Хочу в программу') + '</button></div></div></article>';
+  }
+
   var currentCat = "all";
   function renderCatalog() {
     $("#productGrid").innerHTML = P.filter(function (p) { return currentCat === "all" || p.cat === currentCat; }).map(productCard).join("");
-    $("#programGrid").innerHTML = PR.map(programCard).join("");
+    $("#programGrid").innerHTML = PR.filter(function (p) { return !p.coached; }).map(programCard).join("");
+    $("#solGrid").innerHTML = PR.filter(function (p) { return p.coached; }).map(solCard).join("");
   }
 
   function renderSel() {
     var ids = Object.keys(sel);
     $("#selList").innerHTML = ids.length ? ids.map(function (id) {
       var p = byId[id];
-      return '<li><div class="nm">' + esc(p.name) + '<small>' + (p.isProgram ? 'Программа · ' + esc(p.duration) : esc(p.brand)) + ' · ' + rub(p.price) + '</small></div>' +
+      return '<li><div class="nm">' + esc(p.name) + '<small>' + (p.isProgram ? 'Программа · ' + esc(p.duration) : esc(p.brand)) + ' · ' + priceText(p) + '</small></div>' +
         '<div class="qty"><button type="button" data-dec="' + id + '" aria-label="Меньше">−</button><span>' + sel[id] + '</span><button type="button" data-inc="' + id + '" aria-label="Больше">+</button></div></li>';
     }).join("") : '<li class="sel-empty">Подборка пуста. Можно отправить заявку и так, консультант всё подберёт.</li>';
     var t = totals();
@@ -561,6 +610,7 @@ textarea { min-height: 76px; resize: vertical; }
     { key: "goal", title: "Что для вас сейчас главное?", opts: [
       { v: "energy", t: "Больше энергии", s: "Усталость, мало сил" },
       { v: "immunity", t: "Иммунитет", s: "Часто болею, сезон простуд" },
+      { v: "gut", t: "Пищеварение и лёгкость", s: "Вздутие, тяжесть, детокс" },
       { v: "shape", t: "Форма и питание", s: "Хочу питаться правильнее" },
       { v: "skin", t: "Кожа и волосы", s: "Уход и сияние" },
       { v: "clean", t: "Чистый дом", s: "Меньше химии в уборке" },
@@ -604,8 +654,8 @@ textarea { min-height: 76px; resize: vertical; }
     var html = prog + '<div class="quiz-result"><h3>Ваш старт</h3>';
     html += '<div class="rec">';
     if (prog1 && qAns.start !== "single") {
-      html += '<div class="program"><span class="dur">Программа · ' + esc(prog1.duration) + '</span><h3>' + esc(prog1.name) + '</h3><p>' + esc(prog1.desc) + '</p>' +
-        '<div class="foot"><div class="price">' + rub(prog1.price) + '<small>примерная сумма</small></div>' +
+      html += '<div class="program"><span class="dur">' + (prog1.coached ? 'Программа с сопровождением' : 'Набор') + ' · ' + esc(prog1.duration) + '</span><h3>' + esc(prog1.name) + '</h3><p>' + esc(prog1.desc) + '</p>' +
+        '<div class="foot"><div class="price">' + priceText(prog1) + '<small>' + (prog1.price ? 'примерная сумма' : 'набор продуктов') + '</small></div>' +
         '<button type="button" class="btn small" data-quiz-add="' + prog1.id + '">В подборку</button></div></div>';
     }
     html += '<div class="program"><span class="dur">Продукты</span><h3>Можно начать с этого</h3><ul style="display:block">' +
@@ -636,7 +686,7 @@ textarea { min-height: 76px; resize: vertical; }
       var sumKzt = 0;
       d.items.forEach(function (i) {
         sumKzt += i.priceKzt * i.qty;
-        lines.push("- " + i.name + (i.sku ? ", арт. " + i.sku : "") + " x" + i.qty + " (~" + rubPlain(i.price * i.qty) + " / " + kzt(i.priceKzt * i.qty) + ")");
+        lines.push("- " + i.name + (i.sku ? ", арт. " + i.sku : "") + " x" + i.qty + (i.price ? " (~" + rubPlain(i.price * i.qty) + " / " + kzt(i.priceKzt * i.qty) + ")" : " (набор подобрать, цена по запросу)"));
       });
       lines.push("Итого примерно: " + rubPlain(d.total) + " (" + kzt(sumKzt) + " по каталогу РК)");
     }

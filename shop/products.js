@@ -6,7 +6,7 @@
 // Цены и артикулы сверены с каталогом РК rukz-katalog-2026 (файл от 16.09.2026).
 //
 // cat:  health | beauty | home
-// tags: energy, immunity, skin, shape, hair, clean, water, air, family
+// tags: energy, immunity, gut, skin, shape, hair, clean, water, air, family
 //       (по ним квиз подбирает товары и программы)
 
 window.SHOP_PRODUCTS = [
@@ -30,11 +30,32 @@ window.SHOP_PRODUCTS = [
     size: "450 г", sku: "110415", priceKzt: 21800, tags: ["shape", "energy"],
     desc: "Растительный белок. Добавляйте в каши, смузи, выпечку." },
   { id: "probiotic", cat: "health", img: "img/probiotic.webp", brand: "Nutrilite", name: "Balance Within Пробиотик",
-    size: "30 саше", sku: "120571", priceKzt: 22200, tags: ["immunity", "shape"],
+    size: "30 саше", sku: "120571", priceKzt: 22200, tags: ["immunity", "shape", "gut"],
     desc: "Полезные бактерии для баланса микрофлоры кишечника." },
-  { id: "fiber", cat: "health", img: "img/fiber.webp", brand: "Nutrilite", name: "Смесь пищевых волокон с инулином",
-    size: "30 таблеток", sku: "104283", priceKzt: 11220, tags: ["shape"],
-    desc: "Пищевые волокна и инулин, чтобы сделать рацион сбалансированнее." },
+  { id: "fiber", cat: "health", img: "img/fiber.webp", brand: "Nutrilite", name: "Жевательные таблетки Смесь пищевых волокон",
+    size: "30 таблеток", sku: "104283", priceKzt: 11220, tags: ["shape", "gut"],
+    desc: "Растворимые и нерастворимые пищевые волокна из 13 источников. Со вкусом апельсинового крема." },
+  { id: "inulin", cat: "health", img: "img/inulin.webp", brand: "Nutrilite", name: "Смесь пищевых волокон с инулином",
+    size: "30 пакетиков по 6 г", sku: "102736", priceKzt: 21060, tags: ["gut"],
+    desc: "Пищевые волокна и инулин из корня цикория. Напиток: 1 пакетик в день." },
+  { id: "liver", cat: "health", img: "img/liver.webp", brand: "Nutrilite", name: "Печень Актив",
+    size: "60 таблеток", sku: "100352", priceKzt: 13990, tags: ["gut"],
+    desc: "Экстракты расторопши и одуванчика, витамины группы B. 1 таблетка в сутки." },
+  { id: "garlic", cat: "health", img: "img/garlic.webp", brand: "Nutrilite", name: "Чеснок",
+    size: "120 таблеток", sku: "100566", priceKzt: 14200, tags: ["immunity", "gut"],
+    desc: "Концентрат чеснока в таблетках, без запаха." },
+  { id: "doublex", cat: "health", img: "img/doublex.webp", brand: "Nutrilite", name: "Double X, витамины, минералы и фитонутриенты",
+    size: "упаковка на 31 день", sku: "121576", priceKzt: 29080, tags: ["energy", "immunity"],
+    desc: "Комплекс витаминов, минералов и фитонутриентов на месяц." },
+  { id: "xsmag", cat: "health", img: "img/xsmag.webp", brand: "XS", name: "Магний, вкус лимона",
+    size: "30 стик-пакетиков", sku: "121062", priceKzt: 7775, tags: ["energy"],
+    desc: "Магний в удобных стиках для напитка. Без сахара." },
+  { id: "appetite", cat: "health", img: "img/appetite.webp", brand: "Nutrilite", name: "Контроль аппетита",
+    size: "30 саше", sku: "119792", priceKzt: 20575, tags: ["shape", "gut"],
+    desc: "Помощник для тех, кто следит за питанием и перекусами." },
+  { id: "bdlight", cat: "health", img: "img/bdlight.webp", brand: "Nutrilite", name: "Набор Body Detox Light",
+    size: "3 продукта", sku: "313447", priceKzt: 54008, tags: ["gut", "shape"],
+    desc: "Смесь пищевых волокон с инулином, Печень Актив и Протеиновый порошок. Базовый набор на 3 недели." },
 
   // ---------- Красота ----------
   { id: "cleanser", cat: "beauty", img: "img/cleanser.webp", brand: "Artistry Skin Nutrition", name: "Увлажняющий очищающий мусс для умывания",
@@ -86,6 +107,30 @@ window.SHOP_PRODUCTS = [
 // Готовые программы: набор товаров под задачу.
 // Цена считается автоматически как сумма товаров из items.
 window.SHOP_PROGRAMS = [
+  // ---------- Программы здоровья с сопровождением (coached: true) ----------
+  // items: товары набора (цена = сумма). Пустой items: набор подбирается индивидуально.
+  { id: "c-gut", coached: true, name: "Здоровый кишечник", duration: "5 недель",
+    cover: "img/cover-gut.webp", start: "Старт 5 числа каждого месяца", format: "Онлайн, из любой точки мира",
+    items: ["probiotic", "protein", "xsmag", "doublex", "liver", "garlic", "omega", "fiber", "appetite"],
+    tags: ["gut", "immunity", "shape"],
+    desc: "Пошаговая программа для комфортного пищеварения и лёгкости. 5 недель заботы о себе под сопровождением специалистов и врача-эксперта.",
+    features: ["Ежедневное сопровождение", "Меню и рекомендации", "Чат поддержки", "Экспертные эфиры", "Разбор анализов", "Рекомендации по нутриентам"],
+    forWhom: "При вздутии и дискомфорте, для комфортного пищеварения, для поддержки иммунитета, для тех, кто хочет чувствовать лёгкость каждый день.",
+    note: "Количество мест ограничено" },
+  { id: "c-detox14", coached: true, name: "Детокс 14 дней", duration: "14 дней",
+    cover: "img/cover-detox14.webp", start: "Старт по набору группы", format: "Онлайн, в чате",
+    items: [], tags: ["gut", "energy", "shape"],
+    desc: "Мягкая программа обновления: больше энергии, лёгкости и баланса. Без строгих диет, без подсчёта калорий, без изнурительных тренировок и без стресса.",
+    features: ["14 дней пользы: ежедневные темы и простые объяснения", "Готовое меню на каждый день", "Поддержка и мотивация", "Отчёты в чате и лёгкие задания", "Бонусы: чек-листы, гайды, материалы экспертов"],
+    forWhom: "Для тех, кто хочет вернуть энергию, лёгкость и полезные привычки." },
+  { id: "c-detox21", coached: true, name: "Детокс 21 день", duration: "21 день",
+    cover: "img/cover-detox21.webp", start: "Старт по набору группы", format: "Онлайн, в чате",
+    items: ["bdlight"], tags: ["gut", "shape", "energy"],
+    desc: "Комплексная программа мягкого очищения и восстановления. Больше энергии, ясности и лёгкости каждый день.",
+    features: ["Пошаговый план на 21 день", "Сбалансированное меню и рецепты", "Поддержка и мотивация каждый день", "Чек-листы, гайды и полезные материалы", "Практики для энергии и гармонии", "Рекомендации по образу жизни"],
+    forWhom: "Для тех, кто хочет мягко перезагрузиться без стресса для организма." },
+
+  // ---------- Готовые наборы ----------
   { id: "p-energy", name: "Энергия каждый день", duration: "30 дней",
     items: ["daily", "omega", "vitd"], tags: ["energy", "immunity"],
     desc: "Базовый набор для тех, кто устаёт к середине дня. Схема приёма и поддержка консультанта." },
