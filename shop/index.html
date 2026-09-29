@@ -152,7 +152,11 @@ h2 { font-size: clamp(24px, 3.4vw, 32px); margin: 0; letter-spacing: -.01em; }
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
   box-shadow: var(--shadow); display: flex; flex-direction: column; overflow: hidden;
 }
-.card .thumb { height: 116px; display: grid; place-items: center; position: relative; }
+.card .thumb { height: 170px; display: grid; place-items: center; position: relative; }
+.card.card .thumb.photo { background: #FFFFFF; }
+.card .thumb img { max-height: 150px; max-width: 80%; object-fit: contain; }
+.program .pics { display: flex; gap: 6px; background: #FFFFFF; border-radius: 12px; padding: 8px; justify-content: center; margin-bottom: 4px; }
+.program .pics img { height: 64px; width: auto; max-width: 25%; object-fit: contain; }
 .card .thumb .tag { position: absolute; top: 10px; left: 10px; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: var(--surface); }
 .card.c-health .thumb { background: var(--health-bg); color: var(--health); }
 .card.c-beauty .thumb { background: var(--beauty-bg); color: var(--beauty); }
@@ -204,6 +208,7 @@ footer p { margin: 0 0 8px; max-width: 60em; }
   border-radius: 16px; padding: 10px 10px 10px 16px; display: flex; align-items: center; gap: 12px;
   box-shadow: 0 12px 40px rgba(0,0,0,.25); transition: transform .25s ease;
 }
+.bar:not(.show) { visibility: hidden; }
 .bar.show { transform: translate(-50%, 0); }
 .bar .info { flex: 1; min-width: 0; font-size: 14px; }
 .bar .info b { font-size: 16px; }
@@ -506,7 +511,9 @@ textarea { min-height: 76px; resize: vertical; }
   function productCard(p) {
     var inSel = !!sel[p.id];
     return '<article class="card c-' + p.cat + '">' +
-      '<div class="thumb"><span class="tag">' + CAT[p.cat] + '</span><svg width="44" height="44"><use href="#i-' + p.cat + '"/></svg></div>' +
+      (p.img
+        ? '<div class="thumb photo"><span class="tag">' + CAT[p.cat] + '</span><img src="' + esc(p.img) + '" alt="' + esc(p.name) + '" loading="lazy" width="180" height="150"></div>'
+        : '<div class="thumb"><span class="tag">' + CAT[p.cat] + '</span><svg width="44" height="44"><use href="#i-' + p.cat + '"/></svg></div>') +
       '<div class="body"><div class="brandline">' + esc(p.brand) + ' · ' + esc(p.size) + '</div>' +
       '<h3>' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p>' +
       '<div class="foot"><div class="price">' + rub(p.price) + '<small>примерная цена</small></div>' +
@@ -515,7 +522,8 @@ textarea { min-height: 76px; resize: vertical; }
   function programCard(p) {
     var inSel = !!sel[p.id];
     var names = p.items.map(function (id) { return byId[id] ? '<li>' + esc(byId[id].name.split(",")[0]) + '</li>' : ""; }).join("");
-    return '<article class="program"><span class="dur">' + esc(p.duration) + '</span><h3>' + esc(p.name) + '</h3>' +
+    var pics = p.items.map(function (id) { var x = byId[id]; return x && x.img ? '<img src="' + esc(x.img) + '" alt="" loading="lazy">' : ""; }).join("");
+    return '<article class="program">' + (pics ? '<div class="pics">' + pics + '</div>' : '') + '<span class="dur">' + esc(p.duration) + '</span><h3>' + esc(p.name) + '</h3>' +
       '<p>' + esc(p.desc) + '</p><ul>' + names + '</ul>' +
       '<div class="foot"><div class="price">' + rub(p.price) + '<small>примерная сумма</small></div>' +
       '<button type="button" class="btn small add' + (inSel ? ' soft' : '') + '" data-toggle="' + p.id + '">' + (inSel ? 'В подборке' : 'Хочу программу') + '</button></div></article>';
