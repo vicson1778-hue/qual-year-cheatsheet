@@ -628,7 +628,7 @@ textarea { min-height: 76px; resize: vertical; }
       var sumKzt = 0;
       d.items.forEach(function (i) {
         sumKzt += i.priceKzt * i.qty;
-        lines.push("- " + i.name + " x" + i.qty + " (~" + rubPlain(i.price * i.qty) + " / " + kzt(i.priceKzt * i.qty) + ")");
+        lines.push("- " + i.name + (i.sku ? ", арт. " + i.sku : "") + " x" + i.qty + " (~" + rubPlain(i.price * i.qty) + " / " + kzt(i.priceKzt * i.qty) + ")");
       });
       lines.push("Итого примерно: " + rubPlain(d.total) + " (" + kzt(sumKzt) + " по каталогу РК)");
     }
@@ -649,7 +649,7 @@ textarea { min-height: 76px; resize: vertical; }
     var t = totals();
     var d = {
       name: name, contact: contact, time: f.time.value, comment: f.comment.value.trim(),
-      items: Object.keys(sel).map(function (id) { return { id: id, name: byId[id].name, qty: sel[id], price: byId[id].price, priceKzt: byId[id].priceKzt }; }),
+      items: Object.keys(sel).map(function (id) { return { id: id, name: byId[id].name, qty: sel[id], price: byId[id].price, priceKzt: byId[id].priceKzt, sku: byId[id].sku || "" }; }),
       total: t.sum, quiz: quizSummary, source: source, page: location.href, website: f.website.value
     };
     d.text = leadText(d);
