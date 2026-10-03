@@ -19,5 +19,5 @@ window.SHOP_CONFIG = {
   catalogDate: "сентябрь 2026",
 
   // Пересчёт в рубли: цена в тенге × kztToRub. Цена на сайте округляется до 10 ₽
-  kztToRub: 0.2
+  kztToRub: 0.212
 };

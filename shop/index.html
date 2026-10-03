@@ -197,6 +197,18 @@ h2 { font-size: clamp(24px, 3.4vw, 32px); margin: 0; letter-spacing: -.01em; }
 .program li { font-size: 13px; background: var(--surface-soft); padding: 3px 9px; border-radius: 999px; }
 .program .foot { margin-top: auto; padding-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 
+section.block[id] { scroll-margin-top: 72px; }
+.cat-group { margin-bottom: 30px; }
+.cat-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+.cat-head h3 { margin: 0; font-size: 21px; }
+.cat-head span { color: var(--ink-soft); font-size: 14px; }
+.show-all { display: flex; justify-content: center; margin-top: 18px; }
+@media (min-width: 1100px) {
+  .cat-group .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+  .cat-group .card .body { padding: 12px 12px 14px; }
+  .cat-group .card .foot { flex-wrap: wrap; }
+  .cat-group .card .foot .btn { flex: 1 1 auto; }
+}
 .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 16px; scrollbar-width: none; }
 .tabs button {
   border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft);
@@ -426,7 +438,7 @@ textarea { min-height: 76px; resize: vertical; }
         <button type="button" data-cat="beauty" aria-pressed="false">Красота</button>
         <button type="button" data-cat="home" aria-pressed="false">Для дома</button>
       </div>
-      <div class="grid" id="productGrid"></div>
+      <div id="productGrid"></div>
     </div>
   </section>
 
@@ -655,7 +667,20 @@ textarea { min-height: 76px; resize: vertical; }
 
   var currentCat = "all";
   function renderCatalog() {
-    $("#productGrid").innerHTML = P.filter(function (p) { return currentCat === "all" || p.cat === currentCat; }).map(productCard).join("");
+    var LIMIT = 5, cats = ["health", "beauty", "home"], html = "";
+    if (currentCat === "all") {
+      cats.forEach(function (cat) {
+        var all = P.filter(function (p) { return p.cat === cat; });
+        var top = all.filter(function (p) { return p.hit; }).concat(all.filter(function (p) { return !p.hit; })).slice(0, LIMIT);
+        html += '<div class="cat-group"><div class="cat-head"><h3>' + CAT[cat] + '</h3><span>' + all.length + ' ' + plural(all.length, "товар", "товара", "товаров") + '</span></div>' +
+          '<div class="grid">' + top.map(productCard).join("") + '</div>' +
+          (all.length > top.length ? '<div class="show-all"><button type="button" class="btn ghost" data-jump="' + cat + '">Все товары раздела «' + CAT[cat] + '» (' + all.length + ') →</button></div>' : '') + '</div>';
+      });
+    } else {
+      html = '<div class="grid">' + P.filter(function (p) { return p.cat === currentCat; }).map(productCard).join("") + '</div>' +
+        '<div class="show-all"><button type="button" class="btn ghost" data-jump="all">‹ Назад ко всем разделам</button></div>';
+    }
+    $("#productGrid").innerHTML = html;
     $("#programGrid").innerHTML = PR.filter(function (p) { return !p.coached; }).map(programCard).join("");
     $("#solGrid").innerHTML = PR.filter(function (p) { return p.coached; }).map(solCard).join("");
   }
@@ -905,6 +930,7 @@ textarea { min-height: 76px; resize: vertical; }
       currentCat = d.jump;
       document.querySelectorAll("#tabs button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.cat === d.jump)); });
       renderCatalog();
+      if (el.tagName === "BUTTON") { var cs = $("#catalog"); if (cs) cs.scrollIntoView({ behavior: "smooth", block: "start" }); }
     }
   });
 
