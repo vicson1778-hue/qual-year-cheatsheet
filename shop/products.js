@@ -64,6 +64,13 @@ window.SHOP_PRODUCTS = [
     size: "3 продукта", sku: "313447", priceKzt: 54008, tags: ["gut", "shape"],
     desc: "Смесь пищевых волокон с инулином, Печень Актив и Протеиновый порошок. Базовый набор на 3 недели." },
 
+  { id: "daily90", cat: "health", img: "img/daily.webp", brand: "Nutrilite", name: "Дэйли, витамины и минералы, большая упаковка",
+    size: "90 таблеток", sku: "125167", priceKzt: 18645, tags: ["energy", "immunity", "family"],
+    desc: "Та же формула, что у Дэйли 45, на 3 месяца приёма. В пересчёте на таблетку выгоднее." },
+  { id: "kidsmulti", cat: "health", img: "img/kidsmulti.webp", brand: "Nutrilite", name: "Детские жевательные таблетки с мультивитаминами",
+    size: "120 таблеток", sku: "100930", priceKzt: 13625, tags: ["family", "immunity"],
+    desc: "Витамины и минералы для роста и учёбы, с концентратами экзотических фруктов. Для детей с 4 лет." },
+
   // ---------- Красота ----------
   { id: "cleanser", cat: "beauty", img: "img/cleanser.webp", brand: "Artistry Skin Nutrition", name: "Увлажняющий очищающий мусс для умывания",
     size: "145 мл", sku: "123793", priceKzt: 17920, tags: ["skin"],
@@ -102,6 +109,28 @@ window.SHOP_PRODUCTS = [
     size: "200 г", sku: "124106", priceKzt: 4200, tags: ["family"],
     desc: "Защищает эмаль, уменьшает налёт, освежает дыхание. Большой тюбик надолго." },
 
+  { id: "pastetravel", cat: "beauty", img: "img/pastetravel.webp", brand: "Glister", name: "Многофункциональная зубная паста, дорожный формат",
+    size: "50 г", sku: "124107", priceKzt: 1850, tags: ["family"],
+    desc: "Та же формула, что в большом тюбике, в формате для поездок и сумки." },
+  { id: "soap250", cat: "beauty", img: "img/soap250.webp", brand: "g&h", name: "Питательное ухаживающее мыло для тела и лица",
+    size: "250 г", sku: "125913", priceKzt: 5435, tags: ["skin", "family"],
+    desc: "Кусковое мыло деликатно очищает кожу, делает её мягкой. Без сульфатных ПАВ, красителей, парабенов и спирта." },
+  { id: "soap6", cat: "beauty", img: "img/soap6.webp", brand: "g&h", name: "Мультифункциональное мыло для очищения и защиты кожи, набор",
+    size: "6 × 150 г", sku: "125897", priceKzt: 14660, tags: ["skin", "family"],
+    desc: "Мягкое кусковое мыло с пребиотиками, розмарином и экстрактом зелёного чая Nutrilite. Хватает на всю семью надолго." },
+  { id: "brushsoft", cat: "beauty", img: "img/brush.webp", brand: "Glister", name: "Многофункциональная зубная щётка, мягкая",
+    size: "4 шт.", sku: "124109", priceKzt: 7445, tags: ["family"],
+    desc: "Щётка с мягкой щетиной и технологией In-mold: больше нитей на головке для чистки труднодоступных мест." },
+  { id: "brushmed", cat: "beauty", img: "img/brush.webp", brand: "Glister", name: "Многофункциональная зубная щётка, средняя",
+    size: "4 шт.", sku: "124110", priceKzt: 7445, tags: ["family"],
+    desc: "Щётка со средней жёсткостью щетины и технологией In-mold: больше нитей на головке для чистки труднодоступных мест." },
+  { id: "rinse", cat: "beauty", img: "img/rinse.webp", brand: "Glister", name: "Многофункциональный ополаскиватель для полости рта",
+    size: "72 мл, концентрат", sku: "124108", priceKzt: 7645, tags: ["family"],
+    desc: "Концентрат без спирта: уничтожает бактерии, которые могут вызывать неприятный запах, и освежает дыхание." },
+  { id: "spray", cat: "beauty", img: "img/spray.webp", brand: "Glister", name: "Спрей-освежитель для полости рта с запахом мяты",
+    size: "14 мл", sku: "124111", priceKzt: 3140, tags: ["family"],
+    desc: "Мгновенно освежает дыхание. Компактный флакон на 223 распыления можно взять с собой." },
+
   // ---------- Для дома ----------
   { id: "loc", hit: true, cat: "home", img: "img/loc.webp", brand: "Amway Home", name: "L.O.C. Многофункциональное чистящее средство",
     size: "1 л", sku: "0001", priceKzt: 5900, tags: ["clean", "family"],
@@ -120,7 +149,10 @@ window.SHOP_PRODUCTS = [
     desc: "Чистая вода прямо из-под крана. Консультант поможет выбрать вариант установки." },
   { id: "atmosphere", hit: true, cat: "home", img: "img/atmosphere.webp", brand: "Atmosphere", name: "Atmosphere Mini, очиститель воздуха",
     size: "фильтр 3 в 1", sku: "124746", priceKzt: 488540, tags: ["air", "family"],
-    desc: "Предфильтр, HEPA и угольный фильтр: задерживает мелкие частицы и запахи." }
+    desc: "Предфильтр, HEPA и угольный фильтр: задерживает мелкие частицы и запахи." },
+  { id: "oven", cat: "home", img: "img/oven.webp", brand: "Amway", name: "Чистящее средство-гель для духовых шкафов",
+    size: "500 мл", sku: "0014", priceKzt: 5405, tags: ["clean"],
+    desc: "За 30 минут растворяет жир и пригоревшие остатки. Удобно наносится прилагаемой кисточкой." }
 ];
 
 // Готовые программы: набор товаров под задачу.
