@@ -150,6 +150,9 @@ window.SHOP_PRODUCTS = [
   { id: "atmosphere", hit: true, cat: "home", img: "img/atmosphere.webp", brand: "Atmosphere", name: "Atmosphere Mini, очиститель воздуха",
     size: "фильтр 3 в 1", sku: "124746", priceKzt: 488540, tags: ["air", "family"],
     desc: "Предфильтр, HEPA и угольный фильтр: задерживает мелкие частицы и запахи." },
+  { id: "espringcart", cat: "home", img: "img/espringcart.webp", brand: "eSpring", name: "Угольный фильтр e3, сменный картридж с предфильтром",
+    size: "до 5 000 л в год", sku: "122943", priceKzt: 107530, tags: ["water", "family"],
+    desc: "Сменный картридж для новой системы eSpring: меняется раз в год, предфильтр уже внутри." },
   { id: "oven", cat: "home", img: "img/oven.webp", brand: "Amway", name: "Чистящее средство-гель для духовых шкафов",
     size: "500 мл", sku: "0014", priceKzt: 5405, tags: ["clean"],
     desc: "За 30 минут растворяет жир и пригоревшие остатки. Удобно наносится прилагаемой кисточкой." }
