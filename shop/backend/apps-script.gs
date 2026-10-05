@@ -290,18 +290,58 @@ function showProduct_(chatId, id) {
   var D = data_(), p = byId_(id);
   if (!p || p.isProgram) return showCatalog_(chatId);
   var d = D.D[p.id] || {};
-  var cap = '<b>' + esc_(p.name) + '</b>\n' + esc_(p.brand + ' · ' + p.size + (p.sku ? ' · арт. ' + p.sku : '')) +
-    '\n💰 ' + rub_(p.price) + '\n\n' + (d.benefit ? '<b>Чем полезно:</b> ' + esc_(d.benefit) : esc_(p.desc));
-  if (d.use) cap += '\n\n<b>Как применять:</b> ' + esc_(d.use);
-  if (p.cat === 'health' && !d.notSupplement) cap += '\n\n<i>БАД, не является лекарственным средством.</i>';
+  var pu = peruse_(p, d), water = pu.length > 0 && /литр/.test(pu[0].short);
+
+  var head = '<b>' + esc_(p.name) + '</b>\n' + esc_(p.brand + ' · ' + p.size + (p.sku ? ' · арт. ' + p.sku : '')) + '\n💰 ' + rub_(p.price);
+  pu.forEach(function (x) { head += '\n🧮 ' + esc_(x.short); });
+
+  var body = d.benefit ? '<b>Чем полезно:</b> ' + esc_(d.benefit) : esc_(p.desc);
+  if (pu.length) {
+    body += '\n\n<b>' + (water ? 'Сколько стоит вода' : 'Сколько стоит одно применение') + ':</b>\n' +
+      pu.map(function (x) { return esc_(x.short) + '\nРасчёт: ' + esc_(x.calc) + '. ' + esc_(cap_(x.note)) + '.'; }).join('\n') +
+      (water ? '\nБез учёта электричества, водопроводной воды и подключения.' : '');
+  }
+  if (d.use) body += '\n\n<b>Как применять:</b> ' + esc_(d.use);
+  if (p.cat === 'health' && !d.notSupplement) body += '\n\n<i>БАД, не является лекарственным средством.</i>';
+  body += '\n\n<i>* Цены и расчёт ориентировочные, уточняйте у консультанта.</i>';
+
   var kb = kb_([
     [btn_('✅ Хочу заказать', 'lead:' + p.id)],
     [url_('Подробнее на сайте', site_() + '#item=' + p.id)],
     [btn_('‹ ' + (CAT[p.cat] || 'Каталог'), 'cat:' + p.cat), btn_('Меню', 'm')]
   ]);
-  var r = p.img ? photo_(chatId, jpg_(p.img), cap.slice(0, 1024), kb) : null;
-  if (!r || !r.ok) send_(chatId, cap, kb);
+  // Фото с короткой подписью, потом текст с кнопками: подпись к фото ограничена 1024 символами.
+  if (p.img) {
+    var r = photo_(chatId, jpg_(p.img), head.slice(0, 1024));
+    if (r && r.ok) return send_(chatId, body, kb);
+  }
+  send_(chatId, head + '\n\n' + body, kb);
 }
+
+// Стоимость одного применения: та же формула, что в shop/details.js (SHOP_PERUSE) для сайта.
+function peruse_(p, d) {
+  var list = d && d.perUse ? [].concat(d.perUse) : [];
+  return list.map(function (u) {
+    var ref = u.ref ? byId_(u.ref) : null;
+    var base = ref ? ref.price : p.price;
+    var v = base / u.n;
+    var dec = u.dec != null ? u.dec : (v >= 100 ? 0 : 1);
+    var val = numRu_(v, dec);
+    return {
+      short: '≈ ' + val + ' ₽ за ' + u.unit,
+      calc: numRu_(base, 0) + ' ₽ ÷ ' + numRu_(u.n, u.n % 1 ? 1 : 0) + ' = ' + val + ' ₽',
+      note: u.note + (u.assumed ? ' (расчётная норма)' : '')
+    };
+  });
+}
+
+function numRu_(v, dec) {
+  var s = Number(v).toFixed(dec).split('.');
+  s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return s.join(',');
+}
+
+function cap_(s) { s = String(s == null ? '' : s); return s.charAt(0).toUpperCase() + s.slice(1); }
 
 function showDownloads_(chatId) {
   send_(chatId, '<b>Каталог продукции</b>\n\n📘 Полный каталог 2026: 252 страницы, цены в тенге.\n📗 Краткая подборка: наши программы и товары с ценами в рублях.', kb_([

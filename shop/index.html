@@ -255,6 +255,14 @@ footer p { margin: 0 0 8px; max-width: 60em; }
 .bar .btn { background: var(--accent); color: var(--accent-ink); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bar .btn { background: var(--accent); } }
 
+/* Стоимость применения */
+.peruse { margin: 2px 0 4px; font-size: 13px; font-weight: 600; color: var(--accent); background: var(--accent-soft); border-radius: 10px; padding: 5px 9px; }
+.peruse-box { border: 1px dashed var(--accent); border-radius: 14px; padding: 12px 14px; margin: 12px 0 4px; }
+.peruse-box b { display: block; color: var(--accent); margin-bottom: 6px; }
+.pu-row { display: grid; gap: 2px; margin-bottom: 8px; }
+.pu-v { font-weight: 700; font-size: 17px; }
+.pu-c { font-size: 13px; color: var(--ink-soft); }
+.pu-n { display: block; font-size: 12px; color: var(--ink-soft); }
 /* Product details */
 .card .thumb.photo, .card h3.pname, .program .pics[data-detail], .program h3.pname { cursor: pointer; }
 .program h3.pname:hover { color: var(--accent); }
@@ -624,6 +632,21 @@ textarea { min-height: 76px; resize: vertical; }
     return { n: n, sum: sum };
   }
 
+  // ---- Стоимость одного применения (расчёт в shop/details.js)
+  function peruseList(p) { return window.SHOP_PERUSE ? window.SHOP_PERUSE(p, D[p.id], byId) : []; }
+  function peruseChip(p) {
+    var l = peruseList(p);
+    return l.length ? '<div class="peruse">' + l.map(function (x) { return '<div>' + esc(x.short) + '</div>'; }).join("") + '</div>' : "";
+  }
+  function peruseBox(p) {
+    var l = peruseList(p);
+    if (!l.length) return "";
+    var water = /литр/.test(l[0].short);
+    return '<div class="peruse-box"><b>' + (water ? 'Сколько стоит вода' : 'Сколько стоит одно применение') + '</b>' +
+      l.map(function (x) { return '<div class="pu-row"><span class="pu-v">' + esc(x.short) + '</span><span class="pu-c">Расчёт: ' + esc(x.calc) + '. ' + esc(x.note.charAt(0).toUpperCase() + x.note.slice(1)) + '.</span></div>'; }).join("") +
+      '<span class="pu-n">' + (water ? 'По каталогу фильтр очищает до 5 000 литров в год. Не включены электричество, водопроводная вода и подключение. ' : '') + 'Ориентировочно, по ценам сайта.</span></div>';
+  }
+
   // ---- Render
   function productCard(p) {
     var inSel = !!sel[p.id];
@@ -632,7 +655,7 @@ textarea { min-height: 76px; resize: vertical; }
         ? '<div class="thumb photo" data-detail="' + p.id + '"><span class="tag">' + CAT[p.cat] + '</span><img src="' + esc(p.img) + '" alt="' + esc(p.name) + '" loading="lazy" width="180" height="150"></div>'
         : '<div class="thumb"><span class="tag">' + CAT[p.cat] + '</span><svg width="44" height="44"><use href="#i-' + p.cat + '"/></svg></div>') +
       '<div class="body"><div class="brandline">' + esc(p.brand) + ' · ' + esc(p.size) + '</div>' +
-      '<h3 class="pname" data-detail="' + p.id + '">' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p>' +
+      '<h3 class="pname" data-detail="' + p.id + '">' + esc(p.name) + '</h3><p>' + esc(p.desc) + '</p>' + peruseChip(p) +
       (D[p.id] ? '<button type="button" class="more" data-detail="' + p.id + '">Подробнее и чем полезно →</button>' : '') +
       '<div class="foot"><div class="price">' + rub(p.price) + '<small>примерная цена</small></div>' +
       '<button type="button" class="btn small add' + (inSel ? ' in' : '') + '" data-toggle="' + p.id + '">' + (inSel ? 'В подборке' : 'В подборку') + '</button></div></div></article>';
@@ -782,7 +805,7 @@ textarea { min-height: 76px; resize: vertical; }
       '<h2 id="pdTitle">' + esc(p.name) + '</h2>' +
       '<div class="buy"><div class="price">' + rub(p.price) + '<small>примерная цена</small></div>' +
       '<button type="button" class="btn small add' + (inSel ? ' in' : '') + '" data-toggle="' + p.id + '">' + (inSel ? 'В подборке' : 'В подборку') + '</button></div>' +
-      (d.benefit ? '<div class="benefit"><b>Чем полезно</b>' + esc(d.benefit) + '</div>' : '<p>' + esc(p.desc) + '</p>') +
+      (d.benefit ? '<div class="benefit"><b>Чем полезно</b>' + esc(d.benefit) + '</div>' : '<p>' + esc(p.desc) + '</p>') + peruseBox(p) +
       (d.features ? '<h4>Преимущества</h4>' + list(d.features) : '') +
       (d.use ? '<h4>Как применять</h4><p>' + esc(d.use) + '</p>' : '') +
       (d.ingredients ? '<h4>Ключевые ингредиенты</h4><p>' + esc(d.ingredients) + '</p>' : '') +

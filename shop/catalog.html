@@ -179,6 +179,14 @@ h2.sec { font-size: 22px; margin: 30px 0 4px; padding-bottom: 6px; border-bottom
         '<div class="top"><h3>' + esc(p.name) + '</h3><div class="price">' + rub(p.price) + "</div></div>" +
         '<div class="meta">' + esc(p.brand) + " · " + esc(p.size) + (p.sku ? " · арт. " + esc(p.sku) : "") + "</div>" +
         (d.benefit ? '<div class="benefit"><b>Чем полезно.</b> ' + esc(d.benefit) + "</div>" : "<p>" + esc(p.desc) + "</p>") +
+        (function () {
+          var l = window.SHOP_PERUSE ? window.SHOP_PERUSE(p, d, byId) : [];
+          if (!l.length) return "";
+          var water = /литр/.test(l[0].short);
+          return '<p><span class="lbl">' + (water ? "Стоимость воды:" : "Стоимость применения:") + "</span> " +
+            l.map(function (x) { return "<b>" + esc(x.short) + "</b> (" + esc(x.calc) + ", " + esc(x.note) + ")"; }).join("; ") +
+            (water ? ". Без учёта электричества, водопроводной воды и подключения" : "") + ".</p>";
+        })() +
         (d.features ? list(d.features) : "") +
         (d.use ? '<p><span class="lbl">Как применять:</span> ' + esc(d.use) + "</p>" : "") +
         (d.ingredients ? '<p><span class="lbl">Ингредиенты:</span> ' + esc(d.ingredients) + "</p>" : "") +
